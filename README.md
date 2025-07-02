@@ -1,26 +1,24 @@
 # Neural Network from Scratch
 
-This project implements a neural network from scratch to solve the XOR problem, a classic problem in machine learning that demonstrates the capabilities of neural networks to learn non-linear decision boundaries.
-
+This project is an implementation of a neural network from scratch to solve the XOR problem, a classic problem in machine learning that demonstrates the capabilities of neural networks to learn non-linear decision boundaries.
 
 ## Directory Structure
    - Project structure:
      ```
      NeuralNetworkFromScratch/
      ├── src/
-     │   ├── neural_network.py
-     │   ├── layers.py
-     │   ├── activation_functions.py
-     │   └── loss_functions.py
-     ├── data/
-     │   └── xor_data.py
+     │   ├── layer.py
+     │   ├── fc_layer.py
+     │   ├── activation_layer.py
+     │   ├── activations.py
+     │   ├── losses.py
+     │   └── network.py
      ├── tests/
      │   └── test_neural_network.py
      ├── README.md
      └── requirements.txt
      ```
 
-     
 ## Installation
 
 1. Clone the repository:
@@ -34,25 +32,35 @@ This project implements a neural network from scratch to solve the XOR problem, 
 
 ## Usage
 
-# Usage
 To use the neural network, follow these steps:
 
 ```python
-    from src.neural_network import NeuralNetwork
-    from data.xor_data import get_xor_data
+from src.network import Network
+from src.fc_layer import FCLayer
+from src.activation_layer import ActivationLayer
+from src.activations import tanh, tanh_prime
+from src.losses import mse, mse_prime
 
-    # Load XOR data
-    X, y = get_xor_data()
+# Training data (XOR)
+x_train = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y_train = np.array([[0], [1], [1], [0]])
 
-    # Create an instance of the NeuralNetwork
-    nn = NeuralNetwork(input_size=2, hidden_size=2, output_size=1)
+# Create network
+net = Network()
+net.add(FCLayer(2, 3))
+net.add(ActivationLayer(tanh, tanh_prime))
+net.add(FCLayer(3, 1))
+net.add(ActivationLayer(tanh, tanh_prime))
 
-    # Train the network
-    nn.train(X, y, epochs=1000, learning_rate=0.01)
+# Compile network
+net.use(mse, mse_prime)
 
-    # Make predictions
-    predictions = nn.forward(X)
-    print(predictions)
+# Train
+net.fit(x_train, y_train, epochs=1000, learning_rate=0.1)
+
+# Test
+out = net.predict(x_train)
+print(out)
 ```
 
 ## Running Tests
